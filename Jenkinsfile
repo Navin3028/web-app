@@ -9,19 +9,15 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 script {
-                    // Define the SonarScanner tool location configured in Jenkins
-                    def scannerHome = tool 'SonarScanner'
-                    
-                    // Run SonarQube analysis
-                    withSonarQubeEnv('sq1') { // Ensure this matches the SonarQube server name in Jenkins
-                        sh "${scannerHome}/bin/sonar-scanner"
+                    def scannerHome = tool 'Sonarscanner(new)' // Match the name you configured in Jenkins
+                    withSonarQubeEnv('sq1') { // Use 'sq1' for the SonarQube server name
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.login=Jen-sonar" // Pass in the authentication token
                     }
                 }
             }
         }
         stage('Quality Gate') {
             steps {
-                // Wait for the analysis report to process and check the Quality Gate status
                 timeout(time: 1, unit: 'HOURS') {
                     waitForQualityGate abortPipeline: true
                 }
